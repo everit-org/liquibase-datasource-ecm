@@ -43,7 +43,7 @@ public class LiquiCapabilityTracker extends BundleTracker<Bundle> {
 
     private final LogService logService;
 
-    public LiquiCapabilityTracker(final BundleContext context, final String[] capabilityFilters,
+    public LiquiCapabilityTracker(final BundleContext context, final String[] schemaFilters,
             final LogService logService) {
 
         super(context, Bundle.ACTIVE, null);
@@ -51,20 +51,54 @@ public class LiquiCapabilityTracker extends BundleTracker<Bundle> {
 
         matchingBundlesByFilters = new HashMap<Filter, List<LiquibaseCapability>>();
 
-        for (String capabilityFilter : capabilityFilters) {
+        for (String schemaFilter : schemaFilters) {
             try {
-                Filter filter = context.createFilter(capabilityFilter);
+                Filter filter = parseFilter(context, schemaFilter);
                 matchingBundlesByFilters.put(filter, new ArrayList<LiquibaseCapability>());
             } catch (InvalidSyntaxException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new ConfigurationException("Invalid syntax in the filter expression of LiquiDataSource component"
+                        + schemaFilter);
             }
         }
     }
 
+    private Filter parseFilter(BundleContext context, String filterString) throws InvalidSyntaxException {
+        int indexOfSemicolon = filterString.indexOf(';');
+        String schemaName = filterString;
+        String schemaFilterPart = null;
+        if (indexOfSemicolon != -1) {
+            schemaName = filterString.substring(0, indexOfSemicolon);
+            if (filterString.length() > indexOfSemicolon + 1) {
+                String filterPart = filterString.substring(indexOfSemicolon + 1).trim();
+                int fpl = filterPart.length();
+                if (fpl > 0 && fpl < 4 && !filterPart.startsWith("filter:=\"") && filterPart.charAt(fpl - 1) != '"') {
+                    throw new ConfigurationException(
+                            "Could not analyze the expression for liquibase capability selection in the configuration: "
+                                    + filterString);
+                }
+                schemaFilterPart = filterPart.substring("filter:=".length(), fpl - 1).trim();
+                if (schemaFilterPart.length() == 0) {
+                    schemaFilterPart = null;
+                }
+            }
+        }
+
+        String schemaNameFilter = "(" + Constants.CAPABILITY_ATTR_SCHEMA_NAME + "=" + schemaName + ")";
+
+        StringBuilder resultSB = new StringBuilder();
+        if (schemaFilterPart != null) {
+            resultSB.append("(&");
+        }
+        resultSB.append(schemaNameFilter);
+        if (schemaFilterPart != null) {
+            resultSB.append(schemaFilterPart).append(")");
+        }
+        return context.createFilter(resultSB.toString());
+    }
+
     @Override
     public Bundle addingBundle(Bundle bundle, BundleEvent event) {
-        
+
         return null;
     }
 
@@ -82,6 +116,9 @@ public class LiquiCapabilityTracker extends BundleTracker<Bundle> {
         return matchingCapability;
     }
 
+    /**
+     * @return The matching capability or null if it was not matching.
+     */
     private LiquibaseCapability createCapabilityIfMatches(String schemaName, Filter filter,
             BundleCapability bundleCapability) {
 
