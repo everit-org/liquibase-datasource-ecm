@@ -33,7 +33,7 @@
     </parent>
 
     <groupId>org.everit.osgi</groupId>
-    <artifactId>org.everit.osgi.liquibase.datasource</artifactId>
+    <artifactId>org.everit.osgi.liquibase.datasource.parent</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>Everit Liquibase DataSource Component parent</name>

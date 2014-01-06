@@ -36,7 +36,7 @@ import org.osgi.service.log.LogService;
 
 @Component(metatype = true, immediate = true)
 @Properties({
-        @Property(name = "capabilityFilters", unbounded = PropertyUnbounded.ARRAY),
+        @Property(name = "schemaExpression"),
         @Property(name = "embeddedDataSource.target"), @Property(name = "liquibaseService.target"),
         @Property(name = "logService.target")
 })
