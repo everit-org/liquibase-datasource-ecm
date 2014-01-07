@@ -1,4 +1,4 @@
-package org.everit.osgi.liquibase.component.internal;
+package org.everit.osgi.liquibase.datasource;
 
 /*
  * Copyright (c) 2011, Everit Kft.
@@ -21,31 +21,14 @@ package org.everit.osgi.liquibase.component.internal;
  * MA 02110-1301  USA
  */
 
-import org.osgi.framework.Bundle;
+public class ConfigurationException extends RuntimeException {
 
-public class LiquibaseCapability {
-
-    private final Bundle bundle;
-
-    private final String schemaName;
-
-    private final String schemaResource;
-
-    public LiquibaseCapability(final Bundle bundle, String schemaName, String schemaFile) {
-        this.schemaName = schemaName;
-        this.schemaResource = schemaFile;
-        this.bundle = bundle;
+    public ConfigurationException(String message) {
+        super(message);
     }
 
-    public Bundle getBundle() {
-        return bundle;
-    }
-
-    public String getSchemaName() {
-        return schemaName;
-    }
-
-    public String getSchemaResource() {
-        return schemaResource;
+    public ConfigurationException(String message, Throwable cause) {
+        super(message, cause);
+        // TODO Auto-generated constructor stub
     }
 }

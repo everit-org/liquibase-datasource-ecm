@@ -1,4 +1,4 @@
-package org.everit.osgi.liquibase.tests;
+package org.everit.osgi.liquibase.datasource.tests;
 
 /*
  * Copyright (c) 2011, Everit Kft.
@@ -52,8 +52,16 @@ public class ConfigurationInitComponent {
 
             Dictionary<String, Object> pooledDataSourceProps = new Hashtable<String, Object>();
             pooledDataSourceProps.put("xaDataSource.target", "(service.pid=" + xaDataSourcePid + ")");
-            getOrCreateConfiguration("org.everit.osgi.jdbc.commons.dbcp.ManagedDataSourceComponent",
+            String pooledDataSourcePid = getOrCreateConfiguration(
+                    "org.everit.osgi.jdbc.commons.dbcp.ManagedDataSourceComponent",
                     pooledDataSourceProps);
+
+            Dictionary<String, Object> migratedDataSourceProps = new Hashtable<String, Object>();
+            migratedDataSourceProps.put("embeddedDataSource.target", "(service.pid=" + pooledDataSourcePid + ")");
+            migratedDataSourceProps.put("schemaExpression", "myApp");
+            getOrCreateConfiguration("org.everit.osgi.liquibase.datasource.LiquibaseDataSourceComponent",
+                    migratedDataSourceProps);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InvalidSyntaxException e) {
