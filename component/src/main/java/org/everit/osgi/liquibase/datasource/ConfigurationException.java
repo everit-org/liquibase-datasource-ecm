@@ -23,6 +23,11 @@ package org.everit.osgi.liquibase.datasource;
 
 public class ConfigurationException extends RuntimeException {
 
+    /**
+     * .
+     */
+    private static final long serialVersionUID = 3088041736762438601L;
+
     public ConfigurationException(String message) {
         super(message);
     }
