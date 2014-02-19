@@ -1,25 +1,20 @@
-package org.everit.osgi.liquibase.datasource;
-
-/*
- * Copyright (c) 2011, Everit Kft.
+/**
+ * This file is part of Everit - Liquibase DataSource Component.
  *
- * All rights reserved.
+ * Everit - Liquibase DataSource Component is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
+ * Everit - Liquibase DataSource Component is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301  USA
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Everit - Liquibase DataSource Component.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.everit.osgi.liquibase.datasource;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -48,7 +43,8 @@ public class LiquibaseCapabilityTracker extends BundleTracker<Bundle> {
 
     private final Filter filter;
 
-    private final LinkedHashMap<Bundle, BundleCapability> matchingBundles = new LinkedHashMap<>();
+    private final LinkedHashMap<Bundle, BundleCapability> matchingBundles =
+            new LinkedHashMap<Bundle, BundleCapability>();
 
     private Bundle selectedBundle;
 
@@ -144,7 +140,9 @@ public class LiquibaseCapabilityTracker extends BundleTracker<Bundle> {
                 logService.log(LogService.LOG_INFO, "Successfully migrated database from schema [" + bundle.toString()
                         + " - " + resourceName + "], registering DataSource");
 
-                Hashtable<String, Object> serviceProps = new Hashtable<>(wrappedDataSourceServiceProperties);
+                Hashtable<String, Object> serviceProps =
+                        new Hashtable<String, Object>(wrappedDataSourceServiceProperties);
+
                 Object wrappedDSServiceId = wrappedDataSourceServiceProperties.get(Constants.SERVICE_ID);
                 if (wrappedDSServiceId != null) {
                     serviceProps.put("wrappedDataSource." + Constants.SERVICE_ID, wrappedDSServiceId);
