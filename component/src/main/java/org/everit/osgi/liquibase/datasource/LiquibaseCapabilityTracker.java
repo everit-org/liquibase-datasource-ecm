@@ -164,7 +164,7 @@ public class LiquibaseCapabilityTracker extends BundleTracker<Bundle> {
                 dataSourceSR = super.context.registerService(DataSource.class, wrappedDataSource, serviceProps);
             } catch (RuntimeException e) {
                 logService.log(LogService.LOG_ERROR, "Could not update database with schema file " + resourceName
-                        + " of bundle " + bundle.toString());
+                        + " of bundle " + bundle.toString(), e);
             }
         }
     }
