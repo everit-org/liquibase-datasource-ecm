@@ -48,10 +48,14 @@ import aQute.bnd.annotation.headers.ProvideCapability;
     value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
-        defaultValue = "Default Liquibase DataSource", label = "Service Description",
+        defaultValue = "Default Liquibase DataSource",
+        priority = LiquibaseDataSourceComponent.P00_SERVICE_DESCRIPTION,
+        label = "Service Description",
         description = "The description of this component configuration. It is used to easily "
             + "identify the service registered by this component.") })
 public class LiquibaseDataSourceComponent {
+
+  public static final int P00_SERVICE_DESCRIPTION = 0;
 
   public static final int P01_SCHEMA_EXPRESSION = 1;
 
