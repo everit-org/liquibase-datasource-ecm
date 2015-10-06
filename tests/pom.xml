@@ -27,7 +27,7 @@
 
   <groupId>org.everit.persistence</groupId>
   <artifactId>org.everit.persistence.liquibase.datasource.ecm.tests</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <packaging>bundle</packaging>
   <name>Everit - Liquibase DataSource Tests</name>
