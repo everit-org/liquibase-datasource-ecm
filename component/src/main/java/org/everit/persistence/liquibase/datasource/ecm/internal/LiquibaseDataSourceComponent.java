@@ -29,8 +29,8 @@ import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
 import org.everit.osgi.ecm.component.ConfigurationException;
 import org.everit.osgi.ecm.component.ServiceHolder;
 import org.everit.osgi.ecm.extender.ECMExtenderConstants;
+import org.everit.persistence.liquibase.LiquibaseService;
 import org.everit.persistence.liquibase.datasource.ecm.LiquibaseDataSourceConstants;
-import org.everit.persistence.liquibase.ecm.LiquibaseService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.log.LogService;
@@ -52,6 +52,8 @@ import aQute.bnd.annotation.headers.ProvideCapability;
         description = "The description of this component configuration. It is used to easily "
             + "identify the service registered by this component.") })
 public class LiquibaseDataSourceComponent {
+
+  public static final int P00_SERVICE_DESCRIPTION = 0;
 
   public static final int P01_SCHEMA_EXPRESSION = 1;
 
