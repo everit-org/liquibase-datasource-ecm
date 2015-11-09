@@ -25,8 +25,8 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.everit.osgi.liquibase.bundle.LiquibaseOSGiUtil;
 import org.everit.persistence.liquibase.LiquibaseService;
+import org.everit.persistence.liquibase.ext.osgi.util.LiquibaseOSGiUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
