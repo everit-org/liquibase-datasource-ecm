@@ -28,24 +28,20 @@ import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
 import org.everit.osgi.ecm.component.ConfigurationException;
 import org.everit.osgi.ecm.component.ServiceHolder;
-import org.everit.osgi.ecm.extender.ECMExtenderConstants;
-import org.everit.persistence.liquibase.LiquibaseService;
+import org.everit.osgi.ecm.extender.ExtendComponent;
 import org.everit.persistence.liquibase.datasource.ecm.LiquibaseDataSourceConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.log.LogService;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
-
 /**
  * ECM based configurable component that process liquibase schemas.
  */
+@ExtendComponent
 @Component(componentId = LiquibaseDataSourceConstants.SERVICE_PID,
     configurationPolicy = ConfigurationPolicy.FACTORY, label = "DataSource (Liquibase) (Everit)",
     description = "A component that makes it possible to call Liquibase functionality during "
         + "activating bundles that rely on database schema.")
-@ProvideCapability(ns = ECMExtenderConstants.CAPABILITY_NS_COMPONENT,
-    value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
         defaultValue = "Default Liquibase DataSource",
@@ -69,8 +65,6 @@ public class LiquibaseDataSourceComponent {
 
   private Map<String, Object> embeddedDataSourceProperties;
 
-  private LiquibaseService liquibaseService;
-
   private LogService logService;
 
   private String schemaExpression;
@@ -88,8 +82,8 @@ public class LiquibaseDataSourceComponent {
     Object servicePidValue = componentProperties.get(Constants.SERVICE_PID);
     String servicePid = String.valueOf(servicePidValue);
 
-    tracker = new LiquibaseCapabilityTracker(context, schemaExpression, liquibaseService,
-        embeddedDataSource, embeddedDataSourceProperties, servicePid, logService);
+    tracker = new LiquibaseCapabilityTracker(context, schemaExpression, embeddedDataSource,
+        embeddedDataSourceProperties, servicePid, logService);
     tracker.open();
   }
 
@@ -109,17 +103,9 @@ public class LiquibaseDataSourceComponent {
     embeddedDataSourceProperties = serviceHolder.getAttributes();
   }
 
-  @ServiceRef(attributeId = LiquibaseDataSourceConstants.ATTR_LIQUIBASE_SERVICE_TARGET,
-      defaultValue = "", attributePriority = P03_LIQUIBASE_SERVICE,
-      label = "LiquibaseService filter",
-      description = "The OSGI filter expression of LiquibaseService.")
-  public void setLiquibaseService(final LiquibaseService liquibaseService) {
-    this.liquibaseService = liquibaseService;
-  }
-
   @ServiceRef(attributeId = LiquibaseDataSourceConstants.ATTR_LOG_SERVICE_TARGET, defaultValue = "",
       attributePriority = P04_LOG_SERVICE, label = "LogService filter",
-      description = "The OSGi filter expression of LogService")
+      description = "OSGi filter expression of LogService")
   public void setLogService(final LogService logService) {
     this.logService = logService;
   }

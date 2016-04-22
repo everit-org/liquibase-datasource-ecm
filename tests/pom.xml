@@ -137,13 +137,13 @@
     <dependency>
       <groupId>org.everit.persistence</groupId>
       <artifactId>org.everit.persistence.jdbc.commons.dbcp.ecm</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.everit.persistence</groupId>
       <artifactId>org.everit.persistence.jdbc.dsf.ecm</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.0</version>
     </dependency>
     
     <dependency>
@@ -233,17 +233,7 @@
     <dependency>
       <groupId>org.everit.osgi</groupId>
       <artifactId>org.everit.osgi.ecm.extender.ri</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.everit.osgi</groupId>
-      <artifactId>org.everit.osgi.ecm.component.ri</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.everit.osgi</groupId>
-      <artifactId>org.everit.osgi.ecm.component.webconsole</artifactId>
-      <version>1.1.0</version>
+      <version>3.0.0</version>
     </dependency>
     
     <!-- Database -->

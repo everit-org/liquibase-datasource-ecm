@@ -25,8 +25,6 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.everit.persistence.liquibase.LiquibaseService;
-import org.everit.persistence.liquibase.ext.osgi.util.LiquibaseOSGiUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -49,8 +47,6 @@ public class LiquibaseCapabilityTracker extends BundleTracker<Bundle> {
 
   private final Filter filter;
 
-  private final LiquibaseService liquibaseService;
-
   private final LogService logService;
 
   private final LinkedHashMap<Bundle, BundleCapability> matchingBundles =
@@ -68,12 +64,11 @@ public class LiquibaseCapabilityTracker extends BundleTracker<Bundle> {
    * Constructor.
    */
   public LiquibaseCapabilityTracker(final BundleContext context, final String schemaExpression,
-      final LiquibaseService liquibaseService, final DataSource wrappedDataSource,
+      final DataSource wrappedDataSource,
       final Map<String, Object> wrappedDataSourceServiceProperties, final String componentPid,
       final LogService logService) {
     super(context, Bundle.ACTIVE, null);
     this.logService = logService;
-    this.liquibaseService = liquibaseService;
     filter = LiquibaseOSGiUtil.createFilterForLiquibaseCapabilityAttributes(schemaExpression);
     this.wrappedDataSource = wrappedDataSource;
     this.wrappedDataSourceServiceProperties = wrappedDataSourceServiceProperties;

@@ -22,14 +22,12 @@ public final class LiquibaseDataSourceConstants {
 
   public static final String ATTR_EMBEDDED_DATASOURCE_TARGET = "embeddedDataSource.target";
 
-  public static final String ATTR_LIQUIBASE_SERVICE_TARGET = "liquibaseService.target";
-
   public static final String ATTR_LOG_SERVICE_TARGET = "logService.target";
 
   public static final String ATTR_SCHEMA_EXPRESSION = "schemaExpression";
 
   public static final String SERVICE_PID =
-      "org.everit.persistence.liquibase.datasource.ecm.LiquibaseDataSourceComponent";
+      "org.everit.persistence.liquibase.datasource.ecm.LiquibaseDataSource";
 
   private LiquibaseDataSourceConstants() {
   }
