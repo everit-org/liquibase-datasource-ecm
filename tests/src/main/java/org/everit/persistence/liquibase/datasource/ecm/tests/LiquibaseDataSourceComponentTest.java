@@ -29,28 +29,25 @@ import org.everit.osgi.ecm.annotation.Service;
 import org.everit.osgi.ecm.annotation.ServiceRef;
 import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
-import org.everit.osgi.ecm.extender.ECMExtenderConstants;
+import org.everit.osgi.ecm.extender.ExtendComponent;
 import org.junit.Test;
-
-import aQute.bnd.annotation.headers.ProvideCapability;
 
 /**
  * Test component that tests functionlity.
  */
-@Component(componentId = "LiquibaseTest", configurationPolicy = ConfigurationPolicy.IGNORE)
-@ProvideCapability(ns = ECMExtenderConstants.CAPABILITY_NS_COMPONENT,
-    value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
+@ExtendComponent
+@Component(componentId = "LiquibaseTest", configurationPolicy = ConfigurationPolicy.REQUIRE)
 @StringAttributes({
     @StringAttribute(attributeId = TestRunnerConstants.SERVICE_PROPERTY_TEST_ID,
         defaultValue = "JettyComponentTest"),
     @StringAttribute(attributeId = TestRunnerConstants.SERVICE_PROPERTY_TESTRUNNER_ENGINE_TYPE,
         defaultValue = "junit4") })
-@Service(value = LiquibaseDataSourceComponentTest.class)
+@Service
 public class LiquibaseDataSourceComponentTest {
 
-  private AtomicReference<DataSource> dataSource = new AtomicReference<DataSource>();
+  private final AtomicReference<DataSource> dataSource = new AtomicReference<DataSource>();
 
-  @ServiceRef(defaultValue = "(liquibase.schema.name=myApp)", dynamic = true)
+  @ServiceRef
   public void setDataSource(final DataSource dataSource) {
     this.dataSource.set(dataSource);
   }
