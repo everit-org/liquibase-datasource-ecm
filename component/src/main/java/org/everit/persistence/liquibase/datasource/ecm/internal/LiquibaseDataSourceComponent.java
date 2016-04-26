@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.everit.osgi.ecm.annotation.Activate;
+import org.everit.osgi.ecm.annotation.BundleCapabilityRef;
 import org.everit.osgi.ecm.annotation.Component;
 import org.everit.osgi.ecm.annotation.ConfigurationPolicy;
 import org.everit.osgi.ecm.annotation.Deactivate;
@@ -27,11 +28,11 @@ import org.everit.osgi.ecm.annotation.ServiceRef;
 import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
 import org.everit.osgi.ecm.component.ConfigurationException;
-import org.everit.osgi.ecm.component.ServiceHolder;
 import org.everit.osgi.ecm.extender.ExtendComponent;
 import org.everit.persistence.liquibase.datasource.ecm.LiquibaseDataSourceConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.service.log.LogService;
 
 /**
@@ -39,79 +40,65 @@ import org.osgi.service.log.LogService;
  */
 @ExtendComponent
 @Component(componentId = LiquibaseDataSourceConstants.SERVICE_PID,
-    configurationPolicy = ConfigurationPolicy.FACTORY, label = "DataSource (Liquibase) (Everit)",
-    description = "A component that makes it possible to call Liquibase functionality during "
-        + "activating bundles that rely on database schema.")
+    configurationPolicy = ConfigurationPolicy.FACTORY, label = "Everit Liquibase DataSource",
+    description = "Applies Liquibase changeLog files on the configured DataSource, and registers a"
+        + "new DataSource OSGi service after the database upgrade is successful. The changelog"
+        + " files must be referenced via liquibase.schema bundle capability.")
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
         defaultValue = "Default Liquibase DataSource",
-        priority = LiquibaseDataSourceComponent.P00_SERVICE_DESCRIPTION,
+        priority = LiquibaseDataSourceComponent.P_SERVICE_DESCRIPTION,
         label = "Service Description",
         description = "The description of this component configuration. It is used to easily "
             + "identify the service registered by this component.") })
 public class LiquibaseDataSourceComponent {
 
-  public static final int P00_SERVICE_DESCRIPTION = 0;
+  public static final int P_EMBEDDED_DATA_SOURCE = 2;
 
-  public static final int P01_SCHEMA_EXPRESSION = 1;
+  public static final int P_LIQUIBASE_SERVICE = 3;
 
-  public static final int P02_EMBEDDED_DATA_SOURCE = 2;
+  public static final int P_LOG_SERVICE = 4;
 
-  public static final int P03_LIQUIBASE_SERVICE = 3;
+  public static final int P_REF_LIQUIBASE_CHANGELOGS = 1;
 
-  public static final int P04_LOG_SERVICE = 4;
+  public static final int P_SERVICE_DESCRIPTION = 0;
 
-  private DataSource embeddedDataSource;
+  private DataSource dataSource;
 
-  private Map<String, Object> embeddedDataSourceProperties;
+  private BundleCapability[] liquibaseChangeLogs;
 
   private LogService logService;
-
-  private String schemaExpression;
-
-  private LiquibaseCapabilityTracker tracker;
 
   /**
    * Component activator method.
    */
   @Activate
   public void activate(final BundleContext context, final Map<String, Object> componentProperties) {
-    if (schemaExpression == null) {
+    if (liquibaseChangeLogs == null || liquibaseChangeLogs.length == 0) {
       throw new ConfigurationException("schemaExpression must be defined");
     }
-    Object servicePidValue = componentProperties.get(Constants.SERVICE_PID);
-    String servicePid = String.valueOf(servicePidValue);
-
-    tracker = new LiquibaseCapabilityTracker(context, schemaExpression, embeddedDataSource,
-        embeddedDataSourceProperties, servicePid, logService);
-    tracker.open();
   }
 
   @Deactivate
   public void deactivate() {
-    tracker.close();
-    tracker = null;
   }
 
-  @ServiceRef(attributeId = LiquibaseDataSourceConstants.ATTR_EMBEDDED_DATASOURCE_TARGET,
-      defaultValue = "", attributePriority = P02_EMBEDDED_DATA_SOURCE,
+  @ServiceRef(attributeId = LiquibaseDataSourceConstants.ATTR_DATASOURCE_TARGET,
+      defaultValue = "", attributePriority = P_EMBEDDED_DATA_SOURCE,
       label = "Embedd DataSource filter",
       description = "OSGi filter expression to reference the DataSource service that will be re-"
           + "registered after the database schema is processed by Liquibase.")
-  public void setEmbeddedDataSource(final ServiceHolder<DataSource> serviceHolder) {
-    embeddedDataSource = serviceHolder.getService();
-    embeddedDataSourceProperties = serviceHolder.getAttributes();
+  public void setDataSource(final DataSource dataSource) {
+    dataSource = dataSource;
   }
 
-  @ServiceRef(attributeId = LiquibaseDataSourceConstants.ATTR_LOG_SERVICE_TARGET, defaultValue = "",
-      attributePriority = P04_LOG_SERVICE, label = "LogService filter",
-      description = "OSGi filter expression of LogService")
-  public void setLogService(final LogService logService) {
-    this.logService = logService;
-  }
+  @BundleCapabilityRef(namespace = "liquibase.schema",
+      referenceId = LiquibaseDataSourceConstants.ReferenceConstants.LIQUIBASE_CHANGELOG_CAPABILITIES, // CS_DISABLE_LINE_LENGTH
+      attributeId = LiquibaseDataSourceConstants.ATTR_LIQUIBASE_CHANGELOG_CAPABILITIES,
+      optional = false)
 
-  @StringAttribute(attributeId = LiquibaseDataSourceConstants.ATTR_SCHEMA_EXPRESSION,
-      priority = LiquibaseDataSourceComponent.P01_SCHEMA_EXPRESSION,
+  @StringAttribute(attributeId = LiquibaseDataSourceConstants.ATTR_LIQUIBASE_CHANGELOG_CAPABILITIES,
+      priority = LiquibaseDataSourceComponent.P_REF_LIQUIBASE_CHANGELOGS,
       label = "Schema expression",
       description = "An expression that references the schema to reference a capability of a "
           + "provider bundle. The syntax of the expression is schemaName[;filter:=(expression)] "
@@ -121,8 +108,15 @@ public class LiquibaseDataSourceComponent {
           + "\"Provide-Capability: liquibase.schema;name=myApp;resource=/META-INF/changelog.xml;"
           + "version=2.0.0\", the value of this property can be "
           + "\"myApp;filter:=(version>=2)\". ")
-  public void setSchemaExpression(final String schemaExpression) {
-    this.schemaExpression = schemaExpression;
+  public void setLiquibaseChangeLogCapabilities(final BundleCapability[] liquibaseSchemas) {
+    this.liquibaseChangeLogs = liquibaseSchemas;
+  }
+
+  @ServiceRef(attributeId = LiquibaseDataSourceConstants.ATTR_LOG_SERVICE_TARGET, defaultValue = "",
+      attributePriority = P_LOG_SERVICE, label = "LogService filter",
+      description = "OSGi filter expression of LogService")
+  public void setLogService(final LogService logService) {
+    this.logService = logService;
   }
 
 }

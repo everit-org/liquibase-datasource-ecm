@@ -20,11 +20,23 @@ package org.everit.persistence.liquibase.datasource.ecm;
  */
 public final class LiquibaseDataSourceConstants {
 
-  public static final String ATTR_EMBEDDED_DATASOURCE_TARGET = "embeddedDataSource.target";
+  public static final class ReferenceConstants {
+    public static final String DATASOURCE = "dataSource";
 
-  public static final String ATTR_LOG_SERVICE_TARGET = "logService.target";
+    public static final String LIQUIBASE_CHANGELOG_CAPABILITIES = "liquibaseSchemaCapabilities";
 
-  public static final String ATTR_SCHEMA_EXPRESSION = "schemaExpression";
+    public static final String LOG_SERVICE = "logService";
+
+    private ReferenceConstants() {
+    }
+  }
+
+  public static final String ATTR_DATASOURCE_TARGET = ReferenceConstants.DATASOURCE + ".target";
+
+  public static final String ATTR_LIQUIBASE_CHANGELOG_CAPABILITIES =
+      ReferenceConstants.LIQUIBASE_CHANGELOG_CAPABILITIES + ".clause";
+
+  public static final String ATTR_LOG_SERVICE_TARGET = ReferenceConstants.LOG_SERVICE + ".target";
 
   public static final String SERVICE_PID =
       "org.everit.persistence.liquibase.datasource.ecm.LiquibaseDataSource";
