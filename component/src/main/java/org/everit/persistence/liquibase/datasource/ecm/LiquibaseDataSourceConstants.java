@@ -32,14 +32,41 @@ public final class LiquibaseDataSourceConstants {
     }
   }
 
+  public static final String ATTR_AUTO_COMMIT = "autoCommit";
+
+  public static final String ATTR_CAN_CACHE_LIQUIBASE_TABLE_INFO = "canCacheLiquibaseTableInfo";
+
   public static final String ATTR_CONTEXTS = "contexts";
+
+  public static final String ATTR_CURRENT_DATETIME_FUNCTION = "currentDateTimeFunction";
+
+  public static final String ATTR_DATABASE_CHANGE_LOG_LOCK_TABLE_NAME =
+      "databaseChangeLogLockTableName";
+
+  public static final String ATTR_DATABASE_CHANGE_LOG_TABLE_NAME = "databaseChangeLogTableName";
 
   public static final String ATTR_DATASOURCE_TARGET = ReferenceConstants.DATASOURCE + ".target";
 
+  public static final String ATTR_DEFAULT_CATALOG_NAME = "defaultCatalogName";
+
+  public static final String ATTR_DEFAULT_SCHEMA_NAME = "defaultSchemaName";
+
   public static final String ATTR_LABEL_EXPRESSION = "labelExpression";
+
+  public static final String ATTR_LIQUIBASE_CATALOG_NAME = "liquibaseCatalogName";
 
   public static final String ATTR_LIQUIBASE_CHANGELOG =
       ReferenceConstants.LIQUIBASE_CHANGELOG + ".target";
+
+  public static final String ATTR_LIQUIBASE_SCHEMA_NAME = "liquibaseSchemaName";
+
+  public static final String ATTR_LIQUIBASE_TABLE_SPACE_NAME = "liquibaseTableSpaceName";
+
+  public static final String ATTR_OBJECT_QUOTING_STRATEGY = "objectQuotingStrategy";
+
+  public static final String ATTR_OUTPUT_DEFAULT_CATALOG = "outputDefaultCatalog";
+
+  public static final String ATTR_OUTPUT_DEFAULT_SCHEMA = "outputDefaultSchema";
 
   public static final String ATTR_TAG = "tag";
 
