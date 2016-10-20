@@ -191,10 +191,11 @@ public class LiquibaseDataSourceComponent {
             new Liquibase(String.valueOf(resourceName), resourceAccessor, database);
 
         liquibase.update(tag, contextsObj, labelExpressionObj);
-
-        serviceRegistration = context.registerService(DataSource.class, dataSource,
-            new Hashtable<>(context.getProperties()));
       }
+
+      serviceRegistration = context.registerService(DataSource.class, dataSource,
+          new Hashtable<>(context.getProperties()));
+
     } catch (SQLException | LiquibaseException e) {
       throw new RuntimeException(e);
     }
